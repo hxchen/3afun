@@ -1,6 +1,7 @@
 ---
 title: "如何利用私有链来创建自己的加密代币"
 date: 2018-04-16T11:24:49+08:00
+lastmod: 2018-04-20T18:00:48+08:00
 draft: false
 tags: ["Ethereum"]
 categories: ["Ethereum"]
@@ -385,8 +386,11 @@ contract owned {
         return revenue;                                   // ends function and returns
     }
 ```
+buy函数中我们增加了一个payable关键字,表示调用者可以直接向该函数传入以太币进行调用。
 
 注意:买入和卖出价格并不是以Ether为单位,而是以wei(最小货币精度)为单位。1Ether = 1000000000000000000 wei。所以当在Ether中设置价格时,后面需要加18个0.
+
+不明白的话,可以看后面的Sell Buy 测试数据。
 
 当创建合约时,要发送足够的Ether以确保能买回来市场上所有的代币,否则你的合约会破产并且你的用户不能卖出他们的代币。
 
@@ -433,138 +437,164 @@ contract owned {
 注意:原示例中存在几处bug已经修正。
 
 ```
-pragma solidity ^0.4.16;
+pragma solidity 0.4.21;
 
+interface tokenRecipient { function receiveApproval(address _from, uint256 _value, address _token, bytes _extraData) external; }
+
+/**
+ * owned 是一个管理者
+ */
 contract owned {
     address public owner;
 
-    function owned() public {
+    /**
+     * 初台化构造函数
+     */
+    function owned() public{
         owner = msg.sender;
     }
 
+    /**
+     * 判断当前合约调用者是否是管理员
+     */
     modifier onlyOwner {
-        require(msg.sender == owner);
+        require (msg.sender == owner);
         _;
     }
 
-    function transferOwnership(address newOwner) onlyOwner public {
+    /**
+     * 指派一个新的管理员
+     * @param  newOwner address 新的管理员帐户地址
+     */
+    function transferOwnership(address newOwner) onlyOwner public{
         owner = newOwner;
     }
 }
 
-// 修正bug public 修改为 external
-interface tokenRecipient { function receiveApproval(address _from, uint256 _value, address _token, bytes _extraData) external; }
-
-
+/**
+ * @title 基础版的代币合约
+ */
 contract TokenERC20 {
-    // Public variables of the token
-    string public name;
-    string public symbol;
-    uint8 public decimals = 18;
-    // 18 decimals is the strongly suggested default, avoid changing it
-    uint256 public totalSupply;
+    /* 公共变量 */
+    string public name; //代币名称
+    string public symbol; //代币符号比如'$'
+    uint8 public decimals = 18;  //代币精度，展示的小数点后面多少个0,和以太币一样后面是是18个0
+    uint256 public totalSupply; //代币总量
 
-    // This creates an array with all balances
+    /*记录所有余额的映射*/
     mapping (address => uint256) public balanceOf;
     mapping (address => mapping (address => uint256)) public allowance;
 
-    // This generates a public event on the blockchain that will notify clients
-    event Transfer(address indexed from, address indexed to, uint256 value);
+    /* 在区块链上创建一个事件，用以通知客户端*/
+    event Transfer(address indexed from, address indexed to, uint256 value);  //转帐通知事件
+    event Burn(address indexed from, uint256 value);  //减去用户余额事件
 
-    // This notifies clients about the amount burnt
-    event Burn(address indexed from, uint256 value);
+    /* 构造函数
+     * 初始化合约，并且把初始的所有代币都给这合约的创建者
+     * @param initialSupply 代币的总数
+     * @param tokenName 代币名称
+     * @param tokenSymbol 代币符号
+     */
+    function TokenERC20(uint256 initialSupply, string tokenName, string tokenSymbol) public{
+
+        //初始化总量
+        totalSupply = initialSupply * 10 ** uint256(decimals);    //使用精度来更新总量
+
+        //初始化总量赋值给创建者
+        balanceOf[msg.sender] = totalSupply;
+        name = tokenName;
+        symbol = tokenSymbol;
+
+    }
+
 
     /**
-     * Constrctor function
-     *
-     * Initializes contract with initial supply tokens to the creator of the contract
+     * 私有方法从一个帐户发送给另一个帐户代币，只能合约内部调用
+     * @param  _from address 发送代币的地址
+     * @param  _to address 接受代币的地址
+     * @param  _value uint256 接受代币的数量
      */
-    function TokenERC20(
-        uint256 initialSupply,
-        string tokenName,
-        string tokenSymbol
-    ) public {
-        totalSupply = initialSupply * 10 ** uint256(decimals);  // Update total supply with the decimal amount
-        balanceOf[msg.sender] = totalSupply;                // Give the creator all initial tokens
-        name = tokenName;                                   // Set the name for display purposes
-        symbol = tokenSymbol;                               // Set the symbol for display purposes
+    function _transfer(address _from, address _to, uint256 _value) internal {
+
+      //避免转帐的地址是0x0
+      require(_to != 0x0);
+
+      //检查发送者是否拥有足够余额
+      require(balanceOf[_from] >= _value);
+
+      //检查是否溢出
+      require(balanceOf[_to] + _value > balanceOf[_to]);
+
+      //保存数据用于后面的判断
+      uint previousBalances = balanceOf[_from] + balanceOf[_to];
+
+      //从发送者减掉发送额
+      balanceOf[_from] -= _value;
+
+      //给接收者加上相同的量
+      balanceOf[_to] += _value;
+
+      //通知任何监听该交易的客户端
+      emit Transfer(_from, _to, _value);
+
+      //判断买、卖双方的数据是否和转换前一致
+      assert(balanceOf[_from] + balanceOf[_to] == previousBalances);
+
     }
 
     /**
-     * Internal transfer, only can be called by this contract
-     */
-    function _transfer(address _from, address _to, uint _value) internal {
-        // Prevent transfer to 0x0 address. Use burn() instead
-        require(_to != 0x0);
-        // Check if the sender has enough
-        require(balanceOf[_from] >= _value);
-        // Check for overflows
-        require(balanceOf[_to] + _value > balanceOf[_to]);
-        // Save this for an assertion in the future
-        uint previousBalances = balanceOf[_from] + balanceOf[_to];
-        // Subtract from the sender
-        balanceOf[_from] -= _value;
-        // Add the same to the recipient
-        balanceOf[_to] += _value;
-        emit Transfer(_from, _to, _value);
-        // Asserts are used to use static analysis to find bugs in your code. They should never fail
-        assert(balanceOf[_from] + balanceOf[_to] == previousBalances);
-    }
-
-    /**
-     * Transfer tokens
-     *
-     * Send `_value` tokens to `_to` from your account
-     *
-     * @param _to The address of the recipient
-     * @param _value the amount to send
+     * 从主帐户合约调用者发送给别人代币
+     * @param  _to address 接受代币的地址
+     * @param  _value uint256 接受代币的数量
      */
     function transfer(address _to, uint256 _value) public {
         _transfer(msg.sender, _to, _value);
     }
 
     /**
-     * Transfer tokens from other address
+     * 从某个指定的帐户中，向另一个帐户发送代币
      *
-     * Send `_value` tokens to `_to` in behalf of `_from`
+     * 调用过程，会检查设置的允许最大交易额
      *
-     * @param _from The address of the sender
-     * @param _to The address of the recipient
-     * @param _value the amount to send
+     * @param  _from address 发送者地址
+     * @param  _to address 接受者地址
+     * @param  _value uint256 要转移的代币数量
+     * @return success        是否交易成功
      */
     function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
-        require(_value <= allowance[_from][msg.sender]);     // Check allowance
+        //检查发送者是否拥有足够余额
+        require(_value <= allowance[_from][msg.sender]);   // Check allowance
+
         allowance[_from][msg.sender] -= _value;
+
         _transfer(_from, _to, _value);
+
         return true;
     }
 
     /**
-     * Set allowance for other address
+     * 设置帐户允许支付的最大金额
      *
-     * Allows `_spender` to spend no more than `_value` tokens in your behalf
+     * 一般在智能合约的时候，避免支付过多，造成风险
      *
-     * @param _spender The address authorized to spend
-     * @param _value the max amount they can spend
+     * @param _spender 帐户地址
+     * @param _value 金额
      */
-    function approve(address _spender, uint256 _value) public
-        returns (bool success) {
+    function approve(address _spender, uint256 _value) public returns (bool success) {
         allowance[msg.sender][_spender] = _value;
         return true;
     }
 
     /**
-     * Set allowance for other address and notify
+     * 设置帐户允许支付的最大金额
      *
-     * Allows `_spender` to spend no more than `_value` tokens in your behalf, and then ping the contract about it
+     * 一般在智能合约的时候，避免支付过多，造成风险，加入时间参数，可以在 tokenRecipient 中做其他操作
      *
-     * @param _spender The address authorized to spend
-     * @param _value the max amount they can spend
-     * @param _extraData some extra information to send to the approved contract
+     * @param _spender 帐户地址
+     * @param _value 金额
+     * @param _extraData 操作的时间
      */
-    function approveAndCall(address _spender, uint256 _value, bytes _extraData)
-        public
-        returns (bool success) {
+    function approveAndCall(address _spender, uint256 _value, bytes _extraData) public returns (bool success) {
         tokenRecipient spender = tokenRecipient(_spender);
         if (approve(_spender, _value)) {
             spender.receiveApproval(msg.sender, _value, this, _extraData);
@@ -573,112 +603,183 @@ contract TokenERC20 {
     }
 
     /**
-     * Destroy tokens
+     * 减少代币调用者的余额
      *
-     * Remove `_value` tokens from the system irreversibly
+     * 操作以后是不可逆的
      *
-     * @param _value the amount of money to burn
+     * @param _value 要删除的数量
      */
     function burn(uint256 _value) public returns (bool success) {
+        //检查帐户余额是否大于要减去的值
         require(balanceOf[msg.sender] >= _value);   // Check if the sender has enough
-        balanceOf[msg.sender] -= _value;            // Subtract from the sender
-        totalSupply -= _value;                      // Updates totalSupply
+
+        //给指定帐户减去余额
+        balanceOf[msg.sender] -= _value;
+
+        //代币问题做相应扣除
+        totalSupply -= _value;
+
         emit Burn(msg.sender, _value);
         return true;
     }
 
     /**
-     * Destroy tokens from other account
+     * 删除帐户的余额（含其他帐户）
      *
-     * Remove `_value` tokens from the system irreversibly on behalf of `_from`.
+     * 删除以后是不可逆的
      *
-     * @param _from the address of the sender
-     * @param _value the amount of money to burn
+     * @param _from 要操作的帐户地址
+     * @param _value 要减去的数量
      */
     function burnFrom(address _from, uint256 _value) public returns (bool success) {
-        require(balanceOf[_from] >= _value);                // Check if the targeted balance is enough
-        require(_value <= allowance[_from][msg.sender]);    // Check allowance
-        balanceOf[_from] -= _value;                         // Subtract from the targeted balance
-        allowance[_from][msg.sender] -= _value;             // Subtract from the sender's allowance
-        totalSupply -= _value;                              // Update totalSupply
+
+        //检查帐户余额是否大于要减去的值
+        require(balanceOf[_from] >= _value);
+
+        //检查 其他帐户 的余额是否够使用
+        require(_value <= allowance[_from][msg.sender]);
+
+        //减掉代币
+        balanceOf[_from] -= _value;
+        allowance[_from][msg.sender] -= _value;
+
+        //更新总量
+        totalSupply -= _value;
         emit Burn(_from, _value);
         return true;
     }
 }
 
-/******************************************/
-/*       ADVANCED TOKEN STARTS HERE       */
-/******************************************/
-
+/**
+ * @title 高级版代币
+ * 增加冻结用户、挖矿、根据指定汇率购买(售出)代币价格的功能
+ */
 contract MyAdvancedToken is owned, TokenERC20 {
 
+    //卖出价格 单位是wei
     uint256 public sellPrice;
+
+    //买入价格
     uint256 public buyPrice;
 
+    //是否冻结帐户的列表
     mapping (address => bool) public frozenAccount;
 
-    /* This generates a public event on the blockchain that will notify clients */
+    //定义一个事件，当有资产被冻结的时候，通知正在监听事件的客户端
     event FrozenFunds(address target, bool frozen);
 
-    /* Initializes contract with initial supply tokens to the creator of the contract */
-    function MyAdvancedToken(
-        uint256 initialSupply,
-        string tokenName,
-        string tokenSymbol
-    ) TokenERC20(initialSupply, tokenName, tokenSymbol) public {}
 
-    /* Internal transfer, only can be called by this contract */
-    function _transfer(address _from, address _to, uint _value) internal {
-        require (_to != 0x0);                               // Prevent transfer to 0x0 address. Use burn() instead
-        require (balanceOf[_from] >= _value);               // Check if the sender has enough
-        require (balanceOf[_to] + _value >= balanceOf[_to]); // Check for overflows
-        require(!frozenAccount[_from]);                     // Check if sender is frozen
-        require(!frozenAccount[_to]);                       // Check if recipient is frozen
-        balanceOf[_from] -= _value;                         // Subtract from the sender
-        balanceOf[_to] += _value;                           // Add the same to the recipient
-        emit Transfer(_from, _to, _value);
+    /*初始化合约，并且把初始的所有的令牌都给这合约的创建者
+     * @param initialSupply 所有币的总数
+     * @param tokenName 代币名称
+     * @param tokenSymbol 代币符号
+     */
+    function MyAdvancedToken(
+      uint256 initialSupply,
+      string tokenName,
+      string tokenSymbol
+    ) public TokenERC20 (initialSupply, tokenName, tokenSymbol) {
+     //初始化操作
     }
 
-    /// @notice Create `mintedAmount` tokens and send it to `target`
-    /// @param target Address to receive the tokens
-    /// @param mintedAmount the amount of tokens it will receive
-    function mintToken(address target, uint256 mintedAmount) onlyOwner public {
+
+    /**
+     * 私有方法，从指定帐户转出余额
+     * @param  _from address 发送代币的地址
+     * @param  _to address 接受代币的地址
+     * @param  _value uint256 接受代币的数量
+     */
+    function _transfer(address _from, address _to, uint _value) internal {
+
+        //避免转帐的地址是0x0
+        require (_to != 0x0);
+
+        //检查发送者是否拥有足够余额
+        require (balanceOf[_from] >= _value);
+
+        //检查是否溢出
+        require (balanceOf[_to] + _value >= balanceOf[_to]);
+
+        //检查 冻结帐户
+        require(!frozenAccount[_from]);
+        require(!frozenAccount[_to]);
+
+
+
+        //从发送者减掉发送额
+        balanceOf[_from] -= _value;
+
+        //给接收者加上相同的量
+        balanceOf[_to] += _value;
+
+        //通知任何监听该交易的客户端
+        emit Transfer(_from, _to, _value);
+
+    }
+
+    /**
+     * 合约拥有者，可以为指定帐户创造一些代币
+     * @param  target address 帐户地址
+     * @param  mintedAmount uint256 增加的金额(单位是wei)
+     */
+    function mintToken(address target, uint256 mintedAmount) onlyOwner public{
+
+        //给指定地址增加代币，同时总量也相加
         balanceOf[target] += mintedAmount;
         totalSupply += mintedAmount;
+
+
         emit Transfer(0, this, mintedAmount);
         emit Transfer(this, target, mintedAmount);
     }
 
-    /// @notice `freeze? Prevent | Allow` `target` from sending & receiving tokens
-    /// @param target Address to be frozen
-    /// @param freeze either to freeze it or not
-    function freezeAccount(address target, bool freeze) onlyOwner public {
+    /**
+     * 增加冻结帐户名称
+     *
+     * 你可能需要监管功能以便你能控制谁可以/谁不可以使用你创建的代币合约
+     *
+     * @param  target address 帐户地址
+     * @param  freeze bool    是否冻结
+     */
+    function freezeAccount(address target, bool freeze) onlyOwner public{
         frozenAccount[target] = freeze;
         emit FrozenFunds(target, freeze);
     }
 
-    /// @notice Allow users to buy tokens for `newBuyPrice` eth and sell tokens for `newSellPrice` eth
-    /// @param newSellPrice Price the users can sell to the contract
-    /// @param newBuyPrice Price users can buy from the contract
-    function setPrices(uint256 newSellPrice, uint256 newBuyPrice) onlyOwner public {
+    /**
+     * 设置买卖价格
+     *
+     * 如果你想让ether(或其他代币)为你的代币进行背书,以便可以市场价自动化买卖代币,我们可以这么做。如果要使用浮动的价格，也可以在这里设置
+     *
+     * @param newSellPrice 新的卖出价格
+     * @param newBuyPrice 新的买入价格
+     */
+    function setPrices(uint256 newSellPrice, uint256 newBuyPrice) onlyOwner public{
         sellPrice = newSellPrice;
         buyPrice = newBuyPrice;
     }
 
-    /// @notice Buy tokens from contract by sending ether
+    /**
+     * 使用以太币购买代币,通过增加关键字 payable 我们就可以从任何账户接受以太币来调用这个函数。
+     */
     function buy() payable public {
-        uint amount = msg.value / buyPrice;               // calculates the amount
-        _transfer(this, msg.sender, amount);              // makes the transfers
+      uint amount = msg.value / buyPrice;
+
+      _transfer(this, msg.sender, amount);
     }
 
-    /// @notice Sell `amount` tokens to contract
-    /// @param amount amount of tokens to be sold
+    /**
+     * @dev 卖出代币
+     * @return 要卖出的数量(单位是wei)
+     */
     function sell(uint256 amount) public {
-        /// 修正bug
-        /// require(address(this).balance >= amount * sellPrice);
-        require(address(this).balance >= amount * sellPrice);      // checks if the contract has enough ether to buy
-        _transfer(msg.sender, this, amount);              // makes the transfers
-        msg.sender.transfer(amount * sellPrice);          // sends ether to the seller. It's important to do this last to avoid recursion attacks
+
+        //检查合约的余额是否充足
+        require(address(this).balance >= amount * sellPrice);
+
+        _transfer(msg.sender, this, amount);
+
+        msg.sender.transfer(amount * sellPrice);
     }
 }
 
@@ -686,5 +787,258 @@ contract MyAdvancedToken is owned, TokenERC20 {
 ## 部署
 复制修正后代码到部署界面,选择My Advanced Token,填写相应的参数,发布即可。
 ![deplpy](/media/images/2018/deploy11.png)
+
+## 测试
+### 准备
+账号           |   地址                                         |   CoolCoin   |    Ether   |
+---------------|------------------------------------------------|---------------|----------- |
+Main account   |    0x914995c9c3c993C9D3Fdd63602c91823F932b308  |   9800        |   x        |
+Account 2      |    0x30Ed8Cd207dfdAF5E24847252DF822b1DA1F2FE5  |   100         |   1        |
+Account 3      |    0x379f0f61dF4D9009C1AB7BDEA409F5465b5D940c  |   100         |   1        |
+Account 4      |    0xc2298C3398584aaB380fafb564037D9Fb910e0a1  |   0           |   1        |
+
+### 1.Set prices 测试
+**实验:**
+
+在合约管理界面,通过Set Prices函数,我们可以设置
+
+New sell price =  1
+
+New buy price = 2
+
+**结果**:
+
+等到同步一个区块后,发现管理界面Sell price 和 Buy Price已经更新。
+
+### 2.Approve & Allowance &Transfer From 测试
+**实验1:**
+
+通过账户2授权10个CoolCoin给账户3
+
+Approve(Account2, 100)
+
+![cool coin](/media/images/2018/coolcoin01.png)
+
+**结果:**
+
+通过Allowance查看账户2拥有账户3的授权额度
+
+Allowance(Account 2, Account 3) = 10
+
+![cool coin](/media/images/2018/coolcoin02.png)
+
+**实验2:**
+
+通过Transfer From函数,账户3将账户2账户的10个Cool Coin转给账户4
+
+Transfer From(Account2, Account4,10)
+
+![cool coin](/media/images/2018/coolcoin03.png)
+
+**结果:**
+
+Balance of(Account2) = 90
+
+Balance of(Account4) = 10
+
+Allowance(Account 2, Account 3) = 0
+
+账号           |   地址                                         |   CoolCoin   |    Ether       |
+---------------|------------------------------------------------|---------------|---------------|
+Main account   |    0x914995c9c3c993C9D3Fdd63602c91823F932b308  |   9800        |   x           |
+Account 2      |    0x30Ed8Cd207dfdAF5E24847252DF822b1DA1F2FE5  |   90          |   0,999212698 |
+Account 3      |    0x379f0f61dF4D9009C1AB7BDEA409F5465b5D940c  |   100         |   1           |
+Account 4      |    0xc2298C3398584aaB380fafb564037D9Fb910e0a1  |   10          |   1           |
+
+其他条件测试可自行进行。
+
+### 3.Burn 测试
+**实验**
+
+销毁账户4的5个Cool Coin
+
+![cool coin](/media/images/2018/coolcoin04.png)
+
+**结果**
+
+账户4 还剩下5个Cool Coin,Total supply 同步也会减少5个。
+
+![cool coin](/media/images/2018/coolcoin05.png)
+
+### 4.Mint Token 测试
+
+账户4挖5个Cool Coin
+
+![cool coin](/media/images/2018/coolcoin06.png)
+
+**结果**
+
+账户4 此时有10个Cool Coin
+
+![cool coin](/media/images/2018/coolcoin07.png)
+
+### 5.Burn From 测试
+**实验**
+
+账户2通过Burn From函数销毁账户3的 10个CoolCoin
+
+![cool coin](/media/images/2018/coolcoin08.png)
+
+**结果**
+
+执行失败,原因是账户2不具有账户3的授权额度。
+
+![cool coin](/media/images/2018/coolcoin09.png)
+
+那么我们可以将账户3的20个币授权给账户2再重新试一下
+
+授权
+
+![cool coin](/media/images/2018/coolcoin10.png)
+
+此时有Allowance(Account3, Account2)=20
+
+现在我们再次使用账户2来销毁账户3的10个币试一下
+
+![cool coin](/media/images/2018/coolcoin11.png)
+
+现在可以成功销毁账户3的10个币了
+
+此时有Allowance(Account3, Account2)=10
+
+当我们尝试再次销毁20个的时候,发现区块链拒绝我们的服务,但是我们销毁10个的话,还是可以允许的。
+
+### 6.Buy测试
+
+通过Set prices 测试,我们已经完成的设置有:
+
+Buy Price = 1
+
+Sell price = 2
+
+**实验**
+
+由于现在Cool Coin的管理界面账户里是没有Ether的,所以我们只能先用账户4来购买一些以太币。
+
+1.主账户发送100Ether给账户4
+
+2.测试账户4有100,890236054 ETHER和20个CoolCoin,现在我们使用账户4的10个Ether来购买CoolCoin。
+
+![cool coin](/media/images/2018/coolcoin12.png)
+
+3.**注意:我们购买代币,并不是从合约管理员Owner来扣除相应的代币,而是从合约地址来购买代币。**
+
+所以我们需要先给合约地址充值代币,才能允许其他用户来购买,否则其他用户向一个代币为0的"央行"购买,是会购买不到。
+
+在此我们使用Mint Token函数来给合约地址 0x63b5047Decd4501d4eb3bb7b30e3da89cE37c2f5 充值 100万个。
+
+![cool coin](/media/images/2018/coolcoin13.png)
+
+4.现在我们的"央行"--CoolCoin(管理界面),拥有0个以太币,100万个Cool Coin
+
+账户4拥有100.890236054个以太币和20个CoolCoin
+
+回到合约管理界面,我们尝试使用账户4调用Buy函数,传入10个以太币,看看会发什么。
+
+![购买](/media/images/2018/coolcoin14.png)
+
+**结果**
+
+没错!!!
+
+结果正是我们看到的,账户4以太币减少了10个。Cool Coin币增加了5个。
+
+![购买](/media/images/2018/coolcoin15.png)
+
+同样可查看CoolCoin管理界面多了10个Ether。
+
+### 7.Sell 测试
+
+现在更激动人心的来了,我们要进行Sell测试,因为我们订的Buy Price = 2, Sell price = 1。账户4一买一卖我们会净赚一半!!!
+
+现在我们使用账户4卖出刚才买入的5个CoolCoin:
+
+![卖出操作](/media/images/2018/coolcoin16.png)
+
+卖出后,我们回到Account 4,发现我们成功卖出5个CoolCoin,得到5个以太币。
+
+![卖出操作](/media/images/2018/coolcoin17.png)
+
+### 8.Freeze Account 测试
+**实验**
+
+1.现在我们进行冻结账户测试,我们选择冻结账户4
+
+![卖出操作](/media/images/2018/coolcoin18.png)
+
+2.然后账户4授权20个币给账户2.
+
+![卖出操作](/media/images/2018/coolcoin19.png)
+
+现在我们有
+
+![卖出操作](/media/images/2018/coolcoin20.png)
+
+
+**结果**
+
+为了验证,我们选择使用2将账户4的10个币转账给账户3。结果提示交易会失败,符合预期。
+
+![卖出操作](/media/images/2018/coolcoin21.png)
+
+![卖出操作](/media/images/2018/coolcoin22.png)
+
+重新解冻后,我们就可以进行上面验证了。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

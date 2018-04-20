@@ -29,6 +29,7 @@ geth --identity "TestNode" --rpc --rpcaddr "0.0.0.0" --rpcport "8545" --datadir 
 此次我们加入了 `--rpcaddr`参数来允许远程连接,默认是拒绝远程链接的,只能本地链接。
 
 # 客户端钱包Wallet启动
+## Mac
 
 ### Ethereum Wallet 启动
 ```
@@ -40,4 +41,13 @@ geth --identity "TestNode" --rpc --rpcaddr "0.0.0.0" --rpcport "8545" --datadir 
 /Applications/Mist.app/Contents/MacOS/Mist --rpc http://YOUR_IP:8545
 ```
 
+## Windows
+### Mist 启动
+```
+"D:\Program Files\Mist-win64-0-10-0\Mist.exe" --rpc http://YOUR_IP:8545
+```
+### Ethereum Wallet 启动
+```
+"D:\Program Files\Ethereum-Wallet-win64-0-10-0\Ethereum Wallet.exe" --rpc http://YOUR_IP:8545
+```
 请自行替换 `YOUR_IP`
