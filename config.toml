@@ -14,15 +14,9 @@ hasCJKLanguage = true     # has chinese/japanese/korean ? # 自动检测是否�
 paginate = 10                                              # 首页每页显示的文章数
 rssLimit = 20             # Limit Entry Count to Rss file # 限制 Rss 文章输出数量
 disqusShortname = ""      # disqus_shortname
-googleAnalytics = "UA-117605000-1"      # UA-XXXXXXXX-X
+googleAnalytics = ""      # UA-XXXXXXXX-X
 copyright = "Copyright 3AFun"            # default: author.name ↓        # 默认为下面配置的author.name ↓
 # uglyURLs = true         # more info: https://gohugo.io/content-management/urls/#ugly-urls
-
-# Highlight options. See https://gohugo.io/content-management/syntax-highlighting/
-PygmentsCodeFences = true # Enable syntax highlighting with GitHub flavoured code fences
-PygmentsUseClasses = true # Use CSS classes to format highlighted code
-PygmentsCodefencesGuessSyntax = true
-PygmentsOptions = "linenos=table"
 
 [author]                  # essential                     # 必需
   name = "北斗"
@@ -68,11 +62,9 @@ PygmentsOptions = "linenos=table"
 
   # site info (optional)                                  # 站点信息（可选，不需要的可以直接注释掉）
   logoTitle = "我不是帅才"        # default: the title value    # 默认值: 上面设置的title值
-  keywords = ["技术", "程序员","码农","程序猿","分享","java","python","3afun"]
+  keywords = ["技术", "程序员","码农","程序猿","分享","java","python"]
   description = "北斗的小窝,记录个人工作和生活"
 
-  # 支持HTML CSS
-#  unsafe = true
   # paginate of archives, tags and categories             # 归档、标签、分类每页显示的文章数目，建议修改为一个较大的值
   archive-paginate = 10
 
@@ -91,7 +83,7 @@ PygmentsOptions = "linenos=table"
   toc = true                                                                            # 是否开启目录
   fancybox = true           # see https://github.com/fancyapps/fancybox                 # 是否启用fancybox（图片可点击）
   bootcdn = false           # In china. @Deprecated: use [params.publicCDN]             # 是否使用bootcdn(@Deprecated: 请使用[params.publicCDN])
-  mathjax = true           # see https://www.mathjax.org/                              # 是否使用mathjax（数学公式）
+  mathjax = false           # see https://www.mathjax.org/                              # 是否使用mathjax（数学公式）
   contentCopyright = '<a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a>'
 
   changyanAppid = ""        # Changyan app id             # 畅言
@@ -102,8 +94,6 @@ PygmentsOptions = "linenos=table"
   baidu_verification = ""   # Baidu Verification
   google_verification = ""  # Google_Verification         # 谷歌
 
-  # 增加HTML 语法支持
-  unsafe = true
   # Link custom CSS and JS assets
   #   (relative to /static/css and /static/js respectively)
   customCSS = []            # if ['custom.css'], load '/static/css/custom.css' file
@@ -151,7 +141,7 @@ PygmentsOptions = "linenos=table"
 # [outputs]
 #   home = ["html", "jsonfeed"]
 #   page = ["html"]
-#
+# 
 # [outputFormats]
 # [outputFormats.jsonfeed]
 #   mediaType = "application/json"
