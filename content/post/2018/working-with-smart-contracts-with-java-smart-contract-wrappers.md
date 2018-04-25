@@ -1,8 +1,8 @@
 ---
-title: "Web3j教程详解"
+title: "智能合约和java智能包装的使用"
 date: 2018-04-25T17:34:28+08:00
-draft: true
-lastmod: 2018-04-25T17:34:28+08:00
+draft: false
+lastmod: 2018-04-25T23:42:28+08:00
 tags: ["Ethereum"]
 categories: ["Ethereum"]
 keywords: ["Ethereum"]
@@ -20,14 +20,22 @@ sudo npm install -g solc
 ```
 查看是否安装成功
 ```bash
-#solcjs --version
-0.4.23+commit.124ca40d.Emscripten.clang
+solcjs --version
+```
+# 安装web3j
+```bash
+brew tap web3j/web3j
+brew install web3j
 ```
 
+查看web3j是否安装成功
+```
+web3j
+```
 ### 智能合约生成bin文件和abi文件
 
 现在我们有如下合约 CoolCoin.sol
-```solidity
+```
 pragma solidity 0.4.23;
 interface tokenRecipient { function receiveApproval(address _from, uint256 _value, address _token, bytes _extraData) external; }
 /**
@@ -38,7 +46,7 @@ contract owned {
     /**
      * 初台化构造函数
      */
-    function owned() public{
+    constructor() public {
         owner = msg.sender;
     }
     /**
@@ -77,7 +85,7 @@ contract TokenERC20 {
      * @param tokenName 代币名称
      * @param tokenSymbol 代币符号
      */
-    function TokenERC20(uint256 initialSupply, string tokenName, string tokenSymbol) public{
+    constructor(uint256 initialSupply, string tokenName, string tokenSymbol) public {
         //初始化总量
         totalSupply = initialSupply * 10 ** uint256(decimals);    //使用精度来更新总量
         //初始化总量赋值给创建者
@@ -219,12 +227,9 @@ contract MyAdvancedToken is owned, TokenERC20 {
      * @param tokenName 代币名称
      * @param tokenSymbol 代币符号
      */
-    function MyAdvancedToken(
-      uint256 initialSupply,
-      string tokenName,
-      string tokenSymbol
-    ) public TokenERC20 (initialSupply, tokenName, tokenSymbol) {
+    constructor (uint256 initialSupply,string tokenName,string tokenSymbol) public TokenERC20 (initialSupply, tokenName, tokenSymbol){
      //初始化操作
+     //   TokenERC20(_initialSupply, _tokenName, _tokenSymbol);
     }
     /**
      * 私有方法，从指定帐户转出余额
@@ -303,9 +308,59 @@ contract MyAdvancedToken is owned, TokenERC20 {
         msg.sender.transfer(amount * sellPrice);
     }
 }
+```
+我们在同位置新建一个build的目录来存储bin 和 abi 文件。然后用solc编译合约代码获得 bin 和 abi
+```bash
+solcjs CoolCoin.sol --bin --abi --optimize -o build/
+```
+用web3j编译bin和abi 获得包装代码
+```
+web3j solidity generate /path/to/<smart-contract>.bin /path/to/<smart-contract>.abi -o /path/to/src/main/java -p com.your.organisation.name
+```
+
+上面从智能合约到生成java包装代码比较麻烦,更聪明的办法是你应该写一个脚本文件来处理:
 
 ```
-我们在同位置新建一个build的目录来存储bin 和 abi 文件。然后进行编译合约代码
+#!/usr/bin/env bash
+
+set -e
+set -o pipefail
+
+targets="
+ens/ENS
+ens/PublicResolver
+"
+
+for target in ${targets}; do
+    dirName=$(dirname $target)
+    fileName=$(basename $target)
+
+    cd $dirName
+    echo "Compiling Solidity file ${fileName}.sol:"
+    solc --bin --abi --optimize --overwrite ${fileName}.sol -o build/
+    echo "Complete"
+
+    echo "Generating web3j bindings"
+    web3j solidity generate \
+        build/${fileName}.bin \
+        build/${fileName}.abi \
+        -p org.web3j.ens.contracts.generated \
+        -o ../../../../main/java/ > /dev/null
+    echo "Complete"
+
+    cd -
+done
 ```
+讲解说明:
+
+该文件通过 targets 定义了 你要编译的合约ENS.sol和PublicResolver.sol
+
+然后遍历待编译的合约文件,通过solc命令来编译。
+
+最后通过web3j 命令来生成相应的java包装代码。
+
+参考:<a href="https://github.com/web3j/web3j" target="_blank">web3j/web3j</a>
+
+
 
 
