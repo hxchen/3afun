@@ -2,8 +2,8 @@
 title: "Ethereum wallet以太坊钱包链接Geth Server私有链"
 date: 2018-04-12T18:31:44+08:00
 draft: false
-tags: ["Ethereum"]
-categories: ["Ethereum"]
+tags: ["Ethereum","区块链"]
+categories: ["Ethereum","区块链"]
 author: "北斗"
 ---
 

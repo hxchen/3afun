@@ -2,8 +2,8 @@
 title: "Ubuntu16.04 搭建以太坊Ethereum私链(2)"
 date: 2018-04-13T16:18:49+08:00
 draft: false
-tags: ["Ethereum"]
-categories: ["Ethereum"]
+tags: ["Ethereum","区块链"]
+categories: ["Ethereum","区块链"]
 author: "北斗"
 ---
 

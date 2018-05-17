@@ -3,8 +3,8 @@ title: "如何利用私有链来创建自己的加密代币"
 date: 2018-04-16T11:24:49+08:00
 lastmod: 2018-04-20T18:00:48+08:00
 draft: false
-tags: ["Ethereum"]
-categories: ["Ethereum"]
+tags: ["Ethereum","区块链"]
+categories: ["Ethereum","区块链"]
 author: "北斗"
 ---
 
