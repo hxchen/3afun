@@ -3,8 +3,8 @@ title: "Ubuntu16.04 搭建以太坊Ethereum私链"
 date: 2018-04-11T15:43:48+08:00
 lastmod: 2018-04-11T15:43:48+08:00
 draft: false
-tags: ["Ethereum"]
-categories: ["Ethereum"]
+tags: ["Ethereum","区块链"]
+categories: ["Ethereum","区块链"]
 author: "北斗"
 
 # You can also close(false) or open(true) something for this content.

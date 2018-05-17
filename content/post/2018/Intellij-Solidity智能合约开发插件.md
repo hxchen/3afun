@@ -3,9 +3,9 @@ title: "Intellij Solidity智能合约开发插件"
 date: 2018-04-25T22:15:37+08:00
 draft: false
 lastmod: 2018-04-25T22:15:37+08:00
-tags: ["Ethereum"]
-categories: ["Ethereum"]
-keywords: ["Ethereum"]
+tags: ["IDEA"]
+categories: ["Ethereum","IDEA"]
+keywords: ["Ethereum","IDEA"]
 description: "Ethereum"
 author: "北斗"
 ---

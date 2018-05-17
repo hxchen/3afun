@@ -3,10 +3,10 @@ title: "智能合约和java智能包装的使用"
 date: 2018-04-25T17:34:28+08:00
 draft: false
 lastmod: 2018-04-25T23:42:28+08:00
-tags: ["Ethereum"]
-categories: ["Ethereum"]
-keywords: ["Ethereum"]
-description: "Ethereum"
+tags: ["Ethereum","区块链"]
+categories: ["Ethereum","区块链"]
+keywords: ["Ethereum","区块链"]
+description: "Ethereum 区块链"
 author: "北斗"
 ---
 
