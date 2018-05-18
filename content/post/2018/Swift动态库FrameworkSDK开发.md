@@ -134,7 +134,7 @@ class ViewController: UIViewController {
 
 }
 ```
- ## 三、测试
+## 三、测试
 
  Command+R 在模拟器上运行AccountSDKDemo App,运行后,点击Login按钮,观察后台日志,是否成功输出LoginProcessor中login函数的内容。
 
