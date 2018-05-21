@@ -142,7 +142,7 @@ class ViewController: UIViewController {
 
 
 ## 四、代码
- <a href="https://github.com/hxchen/account" target="_blank">代码参考</a>
+ <a href="https://github.com/hxchen/account" target="_blank">代码下载</a>
 
 
 
