@@ -62,7 +62,7 @@ copyright = "Copyright 3AFun"            # default: author.name ↓        # 默
 
   # site info (optional)                                  # 站点信息（可选，不需要的可以直接注释掉）
   logoTitle = "我不是帅才"        # default: the title value    # 默认值: 上面设置的title值
-  keywords = ["技术", "程序员","码农","程序猿","分享","java","python"]
+  keywords = ["技术", "程序员","码农","程序猿","分享","java","python","3afun"]
   description = "北斗的小窝,记录个人工作和生活"
 
   # paginate of archives, tags and categories             # 归档、标签、分类每页显示的文章数目，建议修改为一个较大的值
