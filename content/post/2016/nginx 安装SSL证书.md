@@ -17,6 +17,7 @@ openssl pkcs12 -in domain_name_privatekey.p12 -out domain_name.key -nocerts -nod
 3.生成CRT证书
 
  cat ssl_certificate.cer IntermediateCA.cer >>  domain_name.crt
+
 4.nginx配置
 ```
 server {
