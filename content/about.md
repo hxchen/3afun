@@ -14,7 +14,7 @@ mathjax: false
 
 传说中的程序猿,混迹于互联网;
 
-写过Java、C++、NodeJs、Python、Android、Object-c等
+写过Java、C++、NodeJs、Python、Android、Object-c、Swift4等
 
 不限前端后端,可以说,工作需要什么,学什么,尽力做好产品。
 
