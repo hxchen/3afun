@@ -1,6 +1,5 @@
 ---
-<<<<<<< HEAD
-title: "{{ replace .Name "-" " " | title }}"
+title: "{{ replace .TranslationBaseName "-" " " | title }}"
 date: {{ .Date }}
 draft: false
 lastmod: {{ .Date }}
@@ -10,17 +9,6 @@ keywords: []
 description: ""
 author: "北斗"
 ---
-
-=======
-title: "{{ replace .TranslationBaseName "-" " " | title }}"
-date: {{ .Date }}
-lastmod: {{ .Date }}
-draft: true
-keywords: []
-description: ""
-tags: []
-categories: []
-author: ""
 
 # You can also close(false) or open(true) something for this content.
 # P.S. comment can only be closed
@@ -32,6 +20,3 @@ contentCopyright: false
 reward: false
 mathjax: false
 ---
-
-<!--more-->
->>>>>>> upstream/master
