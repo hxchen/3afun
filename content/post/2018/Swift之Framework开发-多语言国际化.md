@@ -12,19 +12,23 @@ author: "北斗"
 除了做App开发之外,有时候我们会使用Framework进行SDK开发,如果你使用的语言是Swift,你又怎么才能实现你的多语言国际化呢?
 
 ### 添加多语言文件
-1.Command + N, 选择iOS -> Resource -> Strings File
+
+1.项目配置 -> “Info” -> “Localizations”区域下，可以看到工程默认只支持英文，我们可以再添加中文语言。
+
+2.Command + N, 选择iOS -> Resource -> Strings File
 ![multiLang01](/media/images/2018/multilang000.png)
-2.文件名必须命名为`Localizable.strings`
+3.文件名必须命名为`Localizable.strings`
 
-3.文件创建成功，查看Xcode左侧导航列表，发现多了一个名为Localizable.strings的文件
+4.文件创建成功，查看Xcode左侧导航列表，发现多了一个名为Localizable.strings的文件
 
-4.选中Localizable.strings文件，在Xcode的File inspection中点击Localize，目的是选择我们需要本地化的语言.
+5.选中Localizable.strings文件，在Xcode的File inspection中点击Localize，目的是选择我们需要本地化的语言.
 
-5.依次选择English->Localize,在此我们可以继续添加简体中文,日语等。
+6.依次选择English->Localize,在此我们可以继续添加简体中文,日语等。
 
-6.此时，Xcode左侧的Localizable.strings左侧多了一个箭头，展开后可以看到存储各个语言的文件。
+7.此时，Xcode左侧的Localizable.strings左侧多了一个箭头，展开后可以看到存储各个语言的文件。
 
-7.然后我们只需要在Localizable.strings下对应的文件中，分别以Key-Value的形式，为代码中每一个需要本地化的字符串赋值。
+8.然后我们只需要在Localizable.strings下对应的文件中，分别以Key-Value的形式，为代码中每一个需要本地化的字符串赋值。
+
 例如 `LOGIN = "登录";`
 
 ### 代码中多语言适配
