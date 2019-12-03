@@ -2,7 +2,7 @@
   <div class="mobile-header-logo">
     <a href="{{ "/" | relLangURL }}" class="logo">
       {{- if .Site.Params.logoTitle -}}
-        {{ .Site.Params.logoTitle }}
+        {{ .Site.Params.logoTitle | safeHTML }}
       {{- else -}}
         {{ .Site.Title }}
       {{- end -}}
@@ -39,7 +39,10 @@
           {{ if hasPrefix .URL "http" }}
             <a class="menu-item-link" href="{{ .URL | absLangURL | safeURL }}" rel="noopener" target="_blank">
               {{ .Name }}
-              <i class="iconfont icon-new-window"></i>
+              {{/* icon new window */}}
+              <i class="iconfont">
+                {{ partial "svg/new_window.svg" }}
+              </i>
             </a>
           {{ else }}
             <a class="menu-item-link" href="{{ .URL | absLangURL | safeURL }}">{{ .Name }}</a>
@@ -55,7 +58,10 @@
         <div class="mobile-menu-parent mobile-menu-item-lang">
           <span class="mobile-submenu-open"></span>
           <a href="#">
-            <i class="iconfont icon-globe"></i>
+            {{/* icon globe */}}
+            <i class="iconfont">
+              {{ partial "svg/globe.svg" }}
+            </i>
             {{ i18n "language" }}
           </a>
         </div>
@@ -72,5 +78,15 @@
         </ul>
       </li>
     {{- end }}
+
+    {{ if .Site.Params.search.google.enable }}
+      <li class="mobile-menu-item">
+        <a id="openSearchMobile" class="mobile-menu-item-link menu-item-search" href="#">
+          <i class="iconfont">
+            {{ partial "svg/search.svg" }}
+          </i>
+        </a>
+      </li>
+    {{ end }}
   </ul>
 </nav>

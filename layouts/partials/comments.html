@@ -1,11 +1,23 @@
 {{ if and .IsPage (ne .Params.comment false) }}
 
+  <!-- Commento -->
+  {{- if .Site.Params.commento.enable -}}
+    <div id="comments">
+      <div id="commento"></div>
+      <script src="{{ .Site.Params.commento.url }}/js/commento.js"></script>
+      <noscript>Please enable JavaScript to view the
+        <a href="https://commento.io/">comments powered by Commento.</a>
+      </noscript>
+    </div>
+  {{- end }}
+
   <!-- utteranc -->
   {{ if .Site.Params.utteranc.enable }}
     <div class="post bg-white">
       <script src="https://utteranc.es/client.js"
             repo= "{{ .Site.Params.utteranc.repo }}"
             issue-term="{{ .Site.Params.utteranc.issueTerm }}"
+            theme="{{ default "github-light" .Site.Params.utteranc.theme }}"
             crossorigin="anonymous"
             async>
       </script>
@@ -65,6 +77,9 @@
   </div>
   <div id="disqus_thread"></div>
   <script type="text/javascript">
+    var disqus_config = function () {
+      this.page.url = {{ .Permalink }};
+    };
     function load_disqus() {
       // Don't ever inject Disqus on localhost--it creates unwanted
       // discussions from 'localhost:1313' on your Disqus account...
@@ -84,4 +99,54 @@
   <!-- <a href="http://disqus.com/" class="dsq-brlink" target="_blank">comments powered by <span class="logo-disqus">Disqus</span></a> -->
   </div>
   {{- end }}
+
+    <!-- LiveRe -->
+  {{- if .Site.Params.livere.uid -}}
+	<div id="lv-container" class="disqus-comment" data-id="city" data-uid="{{ .Site.Params.livere.uid }}">
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+    <noscript>
+      Please enable JavaScript to view the
+      <a href="https://www.livere.com">comments powered by LiveRe.</a>
+    </noscript>
+   </div>
+  {{- end }}
+
+  <!-- valine -->
+  {{- if .Site.Params.valine.enable -}}
+  <div id="comments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script>
+    if(window.location.hash){
+        var checkExist = setInterval(function() {
+            if ($(window.location.hash).length) {
+              $('html, body').animate({scrollTop: $(window.location.hash).offset().top-90}, 700);
+              clearInterval(checkExist);
+            }
+        }, 10);
+    }
+  </script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#comments' ,
+        appId: '{{ .Site.Params.valine.appId }}',
+        appKey: '{{ .Site.Params.valine.appKey }}',
+        notify: {{ .Site.Params.valine.notify }}, 
+        verify: {{ .Site.Params.valine.verify }}, 
+        avatar:'{{ .Site.Params.valine.avatar }}', 
+        placeholder: '{{ .Site.Params.valine.placeholder }}',
+        visitor: {{ false }}
+    });
+  </script>
+  {{- end }}
+
 {{- end }}

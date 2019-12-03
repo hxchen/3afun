@@ -13,6 +13,12 @@
 - id: category
   translation: "分类： "
 
+- id: authors
+  translation: 文章作者
+
+- id: author_item
+  translation: "文章作者： "
+
 # posts
 - id: prev
   translation: 上一页
@@ -99,5 +105,11 @@
 - id: read_fr
   translation: Lire en français
 
+- id: read_de
+  translation: Lese in Deutsch
+
 - id: language
   translation: 语言
+
+- id: comments
+  translation: 评论
