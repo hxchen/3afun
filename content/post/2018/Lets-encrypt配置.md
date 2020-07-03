@@ -127,6 +127,14 @@ IMPORTANT NOTES:
 
 通配符证书会在```/etc/letsencrypt/live/3afun.com``` 目录下给我们生成。
 
+
+#### 2020年07月03日更新:
+
+申请自动验证的证书，不需要TXT验证。
+
+```shell script
+certbot-auto certonly --email helloworld.vip@gmail.com --agree-tos --no-eff-email  -d www.3afun.com
+```
 ## 六、Nginx 配置使用证书
 
 Nginx里设置证书和Key文件即可,简约代码如下:
