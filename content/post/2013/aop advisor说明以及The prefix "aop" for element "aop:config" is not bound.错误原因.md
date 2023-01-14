@@ -31,7 +31,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans
                      http://www.springframework.org/schema/aop
                      http://www.springframework.org/schema/aop/spring-aop.xsd ">
 
-(* com.test.service.*.*(..))中几个通配符的含义：
+(* com.test.com.a3fun.rocket.service.*.*(..))中几个通配符的含义：
 ```
 第一个 * —— 通配 任意返回值类型
 

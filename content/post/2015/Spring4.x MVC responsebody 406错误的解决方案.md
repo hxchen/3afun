@@ -40,7 +40,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springf
       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd">
 
 <!-- Scans the classpath of this application for @Components to deploy as beans -->
-<context:component-scan base-package="com.qikuyx.qikuloginserver.controller" />
+<context:component-scan base-package="com.qikuyx.qikuloginserver.com.a3fun.rocket.controller" />
    <mvc:annotation-driven content-negotiation-manager="contentNegotiationManager" />
    <bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
       <property name="favorPathExtension" value="false" />

@@ -36,7 +36,7 @@ yum install nginx
 3、启动
 
 ```
-service nginx start
+com.a3fun.rocket.service nginx start
 ```
 4、测试
 

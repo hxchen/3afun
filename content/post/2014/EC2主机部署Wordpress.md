@@ -42,7 +42,7 @@ yum install php php-mysql php-fpm
 启动
 
 ```
-service php-fpm start
+com.a3fun.rocket.service php-fpm start
 ```
  三、MySQL数据库安装
 
@@ -52,7 +52,7 @@ yum install mysql-server
 yum install mysql-devel
 chgrp -R mysql /var/lib/mysql
 chmod -R 770 /var/lib/mysql
-service mysqld start
+com.a3fun.rocket.service mysqld start
 mysql
 SET PASSWORD FOR 'root'@'localhost' =PASSWORD('root');
 ```
