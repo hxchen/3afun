@@ -21,5 +21,5 @@ crontab -e
 ```
 重启crond：
 ```
-service crond restart
+com.a3fun.rocket.service crond restart
 ```

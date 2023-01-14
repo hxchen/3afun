@@ -12,7 +12,7 @@ apt-get install squid
 curl https://raw.githubusercontent.com/hxchen/proxy/master/squid.conf > /etc/squid3/squid.conf
 mkdir -p /var/cache/squid
 chmod -R 777 /var/cache/squid
-service squid3 stop
+com.a3fun.rocket.service squid3 stop
 squid3 -z
-service squid3 restart
+com.a3fun.rocket.service squid3 restart
 ```

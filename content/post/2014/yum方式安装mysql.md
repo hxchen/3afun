@@ -15,7 +15,7 @@ yum install mysql mysql-server
  2、启动
 
 ```
-service mysqld start
+com.a3fun.rocket.service mysqld start
 ```
  3、登录
 

@@ -14,5 +14,5 @@ yum install php php-mysql php-fpm
  2、启动
 
 ```
-service php-fpm start
+com.a3fun.rocket.service php-fpm start
 ```
