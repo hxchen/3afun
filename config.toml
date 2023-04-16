@@ -100,6 +100,8 @@ PygmentsOptions = "linenos=table"
   baidu_verification = ""   # Baidu Verification
   google_verification = ""  # Google_Verification         # 谷歌
 
+  # 增加HTML 语法支持
+  unsafe = true
   # Link custom CSS and JS assets
   #   (relative to /static/css and /static/js respectively)
   customCSS = []            # if ['custom.css'], load '/static/css/custom.css' file
