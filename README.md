@@ -181,5 +181,6 @@ This project exists thanks to all the people who contribute:
 
 ## License
 
+
 Hugo-theme-jane is licensed under the MIT license. Check the [LICENSE](LICENSE.md) file for details.
 
