@@ -9,7 +9,7 @@ keywords: ["利用wget抓取网站模板"]
 description: "利用wget抓取网站模板"
 author: "北斗"
 comment: false
-toc: false
+toc: true
 autoCollapseToc: false
 contentCopyright: false
 reward: false

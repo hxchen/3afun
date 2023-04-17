@@ -1,7 +1,9 @@
-<link rel="alternate" hreflang="{{ $.Site.LanguageCode | default "en" }}" href="{{ $.Site.BaseURL  }}" />
+{{ range .Translations }}
+<link rel="alternate" hreflang="{{ .Site.LanguageCode }}" href="{{ .Permalink  }}" />
+{{ end }}
 
 <meta name="renderer" content="webkit" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes"/>
 {{/* support older feature phones
   see: https://stackoverflow.com/questions/1988499/meta-tags-for-mobile-should-they-be-used
   */}}
@@ -12,8 +14,6 @@
   see : https://ziyuan.baidu.com/college/courseinfo?id=156
 */}}
 <meta name="applicable-device" content="pc,mobile">
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
 
 <meta name="theme-color" content="#f8f5ec" />
 <meta name="msapplication-navbutton-color" content="#f8f5ec">
@@ -23,7 +23,13 @@
 <meta name="mobile-web-app-capable" content="yes">
 
 <!-- author & description & keywords  -->
-<meta name="author" content="{{ if .Params.author }}{{ .Params.author | safeHTML }}{{ else }}{{ .Site.Author.name | safeHTML }}{{ end }}" />
+{{- if or .Params.author .Site.Author.name -}}
+{{- $author_id := .Params.author | default .Site.Author.name -}}
+{{- $author := (index ($.Site.Data.authors | default dict) $author_id) -}}
+{{- $author_lang := (index ($author | default dict) .Site.Language.Lang) -}}
+{{- $author_name := $author_lang.name.display | default $author.name.display | default $author_id -}}
+<meta name="author" content="{{ $author_name | safeHTML }}" />
+{{- end -}}
 
 {{- if .Description -}}
   <meta name="description" content="{{ .Description | safeHTML }}" />
@@ -46,14 +52,11 @@
 {{ with .Site.Params.google_verification }}<meta name="google-site-verification" content="{{.}}" />{{ end }}
 
 <!-- Site Generator -->
-<meta name="generator" content="Hugo {{ .Hugo.Version }}" />
+<meta name="generator" content="Hugo {{ hugo.Version }}" />
 
 <!-- Permalink & RSSlink -->
 <link rel="canonical" href="{{ .Permalink }}" />
-{{ if .RSSLink -}}
-  <link href="{{ .RSSLink }}" rel="alternate" type="application/rss+xml" title="{{ .Site.Title }}" />
-  <link href="{{ .RSSLink }}" rel="feed" type="application/rss+xml" title="{{ .Site.Title }}" />
-{{ end -}}
+{{ with .OutputFormats.Get "RSS" }}<link href="{{ .RelPermalink }}" rel="alternate" type="application/rss+xml" title="{{ $.Site.Title }}" />{{ end }}
 
 {{ if .OutputFormats.Get "jsonfeed" }}
 <link
@@ -61,13 +64,8 @@
   rel="alternate" type="application/json" title="{{ .Site.Title }}" />
 {{ end }}
 
-<!-- Favicon and Touch icons -->
-<link rel="apple-touch-icon" sizes="180x180" href="{{ "apple-touch-icon.png" | relURL }}">
-<link rel="icon" type="image/png" sizes="32x32" href="{{ "favicon-32x32.png" | relURL }}">
-<link rel="icon" type="image/png" sizes="16x16" href="{{ "favicon-16x16.png" | relURL }}">
-<link rel="icon" href="{{ "favicon.ico" | relURL }}" />
-<link rel="manifest" href="{{ "manifest.json" | relURL }}">
-<link rel="mask-icon" href="{{ "safari-pinned-tab.svg" | relURL }}" color="#5bbad5">
+<!-- Custom Favicon -->
+{{ partial "custom_favicon.html" . }}
 
 <!-- debug -->
 {{- if .Site.Params.debug }}
@@ -75,14 +73,21 @@
 <script>eruda.init();</script>
 {{- end }}
 
-<!-- Styles -->
-<link href="{{ "dist/jane.min.css?v=2.7.0" | relURL }}" rel="stylesheet">
-{{ if .Site.Params.bootcdn -}}
-  {{ if .Site.Params.fancybox }}<link href="https://cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.css" rel="stylesheet" crossorigin="anonymous">{{ end }}
-{{- else if .Site.Params.publicCDN.enable -}}
-  {{ if .Site.Params.fancybox }}{{ .Site.Params.publicCDN.fancyboxCss | safeHTML }}{{ end }}
-{{- else -}}
-  {{ if .Site.Params.fancybox }}<link href="{{ "lib/fancybox/jquery.fancybox-3.1.20.min.css" | relURL }}" rel="stylesheet">{{ end }}
+<!-- Jane theme main style -->
+{{ $style := resources.Get "sass/jane.scss" | toCSS | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $style.RelPermalink }}" integrity="{{ $style.Data.Integrity }}" media="screen" crossorigin="anonymous">
+<!-- End -->
+
+<!-- Custom wallpaper (optional) -->
+{{- if .Site.Params.wallpaper }}
+<style>
+  .wallpaper {
+    background-image: url('{{ .Site.Params.wallpaper }}');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+  }
+</style>
 {{- end }}
 
 <!-- custom css -->
@@ -92,7 +97,6 @@
 
 {{/* NOTE: These Hugo Internal Templates can be found starting at https://github.com/spf13/hugo/blob/master/tpl/tplimpl/template_embedded.go#L158 */}}
 {{- template "_internal/opengraph.html" . -}}
-{{- template "_internal/google_news.html" . -}}
 {{- template "_internal/schema.html" . -}}
 {{- template "_internal/twitter_cards.html" . -}}
 
@@ -107,8 +111,8 @@
 <![endif]-->` | safeHTML }}
 
 <!-- Analytics -->
-{{- if .Site.GoogleAnalytics -}}
-  {{ template "_internal/google_analytics_async.html" . }}
+{{- if and (not .Site.IsServer) .Site.GoogleAnalytics -}}
+  {{ template "_internal/google_analytics.html" . }}
 {{- end -}}
 
 <!-- Custom head -->

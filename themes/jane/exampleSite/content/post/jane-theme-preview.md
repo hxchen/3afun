@@ -1,24 +1,31 @@
 ---
 title: "Jane Theme Preview"
-date: 2018-03-06T16:01:23+08:00
+date: 2018-01-01T16:01:23+08:00
 lastmod: 2018-03-07T16:01:23+08:00
 draft: false
 tags: ["preview", "shortcodes", "tag-6"]
-categories: ["shortcodes", "index"]
+categories: ["docs", "shortcodes", "index"]
 author: "Typora"
+
+weight: 1
 
 # You can also close(false) or open(true) something for this content.
 # P.S. comment can only be closed
 # comment: false
-# toc: false
+# toc: true
 
 # You can also define another contentCopyright. e.g. contentCopyright: "This is another copyright."
 contentCopyright: '<a href="https://github.com/gohugoio/hugoBasicExample" rel="noopener" target="_blank">See origin</a>'
 # reward: false
 mathjax: true
+
+menu:
+  main:
+    parent: "docs"
+    weight: 1
 ---
 
-**Markdown** is created by [Daring Fireball](http://daringfireball.net/), the original guideline is [here](http://daringfireball.net/projects/markdown/syntax). Its syntax, however, varies between different parsers or editors. 
+**Markdown** is created by [Daring Fireball](http://daringfireball.net/), the original guideline is [here](http://daringfireball.net/projects/markdown/syntax). Its syntax, however, varies between different parsers or editors.
 
 Please note that HTML fragments in markdown source will be recognized but not parsed or rendered. Also, there may be small reformatting on the original markdown source code after saving.
 
@@ -51,33 +58,34 @@ Markdown uses email-style > characters for block quoting. They are presented as:
 
 > This is a blockquote with two paragraphs. This is first paragraph.
 >
-> This is second pragraph.Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.
+> This is second paragraph. Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.
+>
+> This is another blockquote with one paragraph. There is three empty line to separate two blockquote.
+>
+> 这是一段中文测试。
+>
 
 
-
-> This is another blockquote with one paragraph. There is three empty line to seperate two blockquote.
-
-
-In typora, just input ‘>’ followed by quote contents a block quote is  generated. Typora will insert proper ‘>’ or line break for you. Block quote inside anther block quote is allowed by adding additional levels of ‘>’. 
+In typora, just input ‘>’ followed by quote contents a block quote is  generated. Typora will insert proper ‘>’ or line break for you. Block quote inside anther block quote is allowed by adding additional levels of ‘>’.
 
 ## Lists
 
-Input `* list item 1` will create an un-ordered list, the `*` symbol can be replace with `+` or `-`. 
+Input `* list item 1` will create an un-ordered list, the `*` symbol can be replace with `+` or `-`.
 
 Input `1. list item 1` will create an ordered list, their markdown source code is like:
 
-*   Red
-*   Green
-*   Blue
+* Red
+* Green
+* Blue
 
-1.  Red
-2. 	Green
-3.	Blue
+1. Red
+2. Green
+3. Blue
 
 
 ## Task List
 
-Task lists are lists with items marked as either [ ] or [x] (incomplete or complete). For example:
+Task lists are lists with items marked as either `[ ]` or `[x]` (incomplete or complete). For example:
 
 - [ ] a task list item
 - [ ] list syntax required
@@ -89,13 +97,24 @@ You can change the complete/incomplete state by click the checkbox before the it
 
 ## Syntax Highlighting
 
+unset language:
+
 ```js
 function helloWorld () {
   alert("Hello, World!")
 }
 ```
 
-```java
+```text
+plain text
+
+first line
+second line
+```
+
+**choose different style:**
+
+```java {style=github}
 public class HelloWorld {
   public static void main(String[] args) {
     System.out.println("Hello, World!");
@@ -103,13 +122,21 @@ public class HelloWorld {
 }
 ```
 
+{{< highlight java "style=vim">}}
+public class HelloWorld {
+  public static void main(String[] args) {
+    System.out.println("Hello, World!");
+  }
+}
+{{< / highlight >}}
+
 ## Math Blocks
 
 You can render *LaTeX* mathematical expressions using **MathJax**.
 
 Input `$$`, then press 'Return' key will trigger an input field which accept *Tex/LaTex* source. Following is an example:
 $$
-\mathbf{V}_1 \times \mathbf{V}_2 =  \begin{vmatrix} 
+\mathbf{V}_1 \times \mathbf{V}_2 =  \begin{vmatrix}
 \mathbf{i} & \mathbf{j} & \mathbf{k} \\
 \frac{\partial X}{\partial u} &  \frac{\partial Y}{\partial u} & 0 \\
 \frac{\partial X}{\partial v} &  \frac{\partial Y}{\partial v} & 0 \\
@@ -121,7 +148,7 @@ In markdown source file, math block is *LaTeX* expression wrapped by ‘$$’ ma
 
 ``` markdown
 $$
-\mathbf{V}_1 \times \mathbf{V}_2 =  \begin{vmatrix} 
+\mathbf{V}_1 \times \mathbf{V}_2 =  \begin{vmatrix}
 \mathbf{i} & \mathbf{j} & \mathbf{k} \\
 \frac{\partial X}{\partial u} &  \frac{\partial Y}{\partial u} & 0 \\
 \frac{\partial X}{\partial v} &  \frac{\partial Y}{\partial v} & 0 \\
@@ -140,16 +167,22 @@ Following descriptions can be skipped, as markdown source code for tables are ge
 In markdown source code, they look like:
 
 ``` markdown
-| First Header  | Second Header |
-| ------------- | ------------- |
-| Content Cell  | Content Cell  |
-| Content Cell  | Content Cell  |
+| Name              | Markdown            | HTML tag             |
+| ----------------- | ------------------- | -------------------- |
+| *Emphasis*        | `*Emphasis*`        | `<em></em>`          |
+| **Strong**        | `**Strong**`        | `<strong></strong>` |
+| `code`            | ``code``            | `<code></code>`      |
+| ~~Strikethrough~~ | `~~Strikethrough~~` | `<del></del`         |
+| <u>Underline</u>  | `<u>underline</u>`  | `<u></u>`            |
 ```
 
-| First Header  | Second Header |
-| ------------- | ------------- |
-| Content Cell  | Content Cell  |
-| Content Cell  | Content Cell  |
+| Name              | Markdown            | HTML tag             |
+| ----------------- | ------------------- | -------------------- |
+| *Emphasis*        | `*Emphasis*`        | `<em></em>`          |
+| **Strong**        | `**Strong**`        | ` <strong></strong>` |
+| `code`            | `` `code` ``        | `<code></code>`      |
+| ~~Strikethrough~~ | `~~Strikethrough~~` | `<del></del`         |
+| <u>Underline</u>  | `<u>underline</u>`  | `<u></u>`            |
 
 
 ## Footnotes
@@ -164,11 +197,14 @@ will produce:
 
 You can create footnotes like this[^footnote].
 
+This is another footnote[^another-footnote].
+
 [^footnote]: Here is the *text* of the **footnote**.
+[^another-footnote]: second footnote is here.
 
 Mouse on the ‘footnote’ superscript to see content of the footnote.
 
-## Horizontal Rules
+## Horizontal Rules  Horizontal Rules Horizontal Rules Horizontal Rules Horizontal Rules Horizontal Rules Horizontal Rules
 
 Input `***` or `---` on a blank line and press `return` will draw a horizontal line.
 
@@ -200,7 +236,7 @@ This is [an example](http://example.com/"Title") inline link. (`<p>This is <a hr
 
 Command(on Windows: Ctrl) + Click [This link](#block-elements) will jump to header `Block Elements`. To see how to write that, please move cursor or click that link with `⌘` key pressed to expand the element into markdown source.
 
-### Reference Links 
+### Reference Links
 
 Reference-style links use a second set of square brackets, inside which you place a label of your choosing to identify the link:
 
@@ -235,7 +271,7 @@ Typora allows you to insert urls as links, wrapped by `<`brackets`>`.
 
 `<i@typora.io>` becomes <i@typora.io>.
 
-Typora will aslo auto link standard URLs. e.g: www.google.com.
+Typora will also auto link standard URLs. e.g: www.google.com.
 
 ## Images
 
@@ -261,7 +297,7 @@ Markdown treats asterisks (`*`) and underscores (`_`) as indicators of emphasis.
 _single underscores_
 ```
 
-output: 
+output:
 
 *single asterisks*
 
@@ -325,15 +361,15 @@ Underline is powered by raw HTML.
 
 ## Emoji :happy:
 
-Input emoji with syntax `:smile:`. 
+Input emoji with syntax `:smile:`.
 
-User can trigger auto-complete suggestions for emoji by pressing `ESC` key, or trigger it automatically after enable it on preference panel. Also, input UTF8 emoji char directly from `Edit` -> `Emoji & Symbols` from menu bar is also supported. 
+User can trigger auto-complete suggestions for emoji by pressing `ESC` key, or trigger it automatically after enable it on preference panel. Also, input UTF8 emoji char directly from `Edit` -> `Emoji & Symbols` from menu bar is also supported.
 
 
 ## Inline Math
 
-To use this feature, first, please enable it in `Preference` Panel -> `Markdown` Tab. Then use `$` to wrap TeX command, for example: `$\lim_{x \to \infty} \exp(-x) = 0$` will be rendered as LaTeX command. 
+To use this feature, first, please enable it in `Preference` Panel -> `Markdown` Tab. Then use `$` to wrap TeX command, for example: `$\lim_{x \to \infty} \exp(-x) = 0$` will be rendered as LaTeX command.
 
 To trigger inline preview for inline math: input “$”, then press `ESC` key, then input TeX command, a preview tooltip will be visible like below:
 
-<img src="http://typora.io/img/inline-math.gif" style="zoom:50%;" />
+<img src="https://typora.io/img/inline-math.gif" style="zoom:50%;" />

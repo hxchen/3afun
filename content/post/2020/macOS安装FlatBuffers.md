@@ -9,7 +9,7 @@ keywords: ["FlatBuffers"]
 description: "MacOX install FlatBuffers"
 author: "北斗"
 comment: false
-toc: false
+toc: true
 autoCollapseToc: false
 contentCopyright: false
 reward: false

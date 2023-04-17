@@ -14,7 +14,24 @@ Jane 是一个专注于阅读体验的 Hugo 主题。最早的版本基于 [hugo
 - 支持多个 Shortcode
 - 单独设计的 *标签页* 和 *分类页*
 - 社交网站链接
+- 更好的分页、目录、注脚样式
+- 使用更快的 Chroma 代码高亮
+- 自定义 css，自定义 js，自定义 head
+- 子目录支持
+- 搜索优化
 
+
+## 谁在用 Hugo-theme-Jane
+
+- [ATFeng](https://www.gooth.org/) - A beautiful blog fork from Jane.
+- [Jack Baty's Blog](https://www.baty.net/) - Thousands of posts on the site powered by Hugo & Theme Jane.
+- [Notes on Blue Skies](https://terrty.net) - Personal blog in Russian by @paskal
+- [贤民的比特记忆](http://www.xianmin.org/) - A Chinese blog.
+- [虞双齐爱折腾](https://yushuangqi.com/) - @ysqi 个人技术博客.
+- [茶歇驿站](https://maiyang.me/) - Go 爱好者，开源爱好者，Go 夜读发起人 @yangwenmai.
+- [Time](https://ifttl.com/) - 个人博客
+- [碎裂之梦](https://h-cheung.gitlab.io/) - 计院学生，开源爱好者，ACM新手
+- Waiting to add more...
 
 
 ## 如何使用？
@@ -119,7 +136,7 @@ author: "xianmin"                  # 作者
 # 用户自定义
 # 你可以选择 关闭(false) 或者 打开(true) 以下选项
 comment: false   # 关闭评论
-toc: false       # 关闭文章目录
+toc: true       # 关闭文章目录
 # 你同样可以自定义文章的版权规则
 contentCopyright: '<a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a>'
 reward: false	 # 关闭打赏
@@ -173,3 +190,8 @@ npm run dev
 Hugo-theme-jane is licensed under the MIT license. Check the [LICENSE](LICENSE.md) file for details.
 
 
+# Stackbit
+
+This theme is ready to import into Stackbit. This theme can be deployed to Netlify and you can connect any headless CMS including Forestry, NetlifyCMS, DatoCMS or Contentful.
+
+[![Create with Stackbit](https://assets.stackbit.com/badge/create-with-stackbit.svg)](https://app.stackbit.com/create?theme=https://github.com/xianmin/hugo-theme-jane)

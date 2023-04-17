@@ -72,13 +72,5 @@
       <textMaps />
     </LinkMapSettings>
   </component>
-  <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK" />
-  <component name="PyConsoleOptionsProvider">
-    <option name="myPythonConsoleState">
-      <console-settings sdk-home="/Library/Frameworks/Python.framework/Versions/3.6/bin/python3">
-        <option name="mySdkHome" value="/Library/Frameworks/Python.framework/Versions/3.6/bin/python3" />
-      </console-settings>
-    </option>
-  </component>
 </project>

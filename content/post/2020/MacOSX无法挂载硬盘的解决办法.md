@@ -9,7 +9,7 @@ keywords: ["Mac OSX diskutil"]
 description: "MacOSX无法挂载硬盘的解决办法"
 author: "北斗"
 comment: false
-toc: false
+toc: true
 autoCollapseToc: false
 contentCopyright: false
 reward: false

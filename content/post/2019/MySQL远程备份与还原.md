@@ -8,7 +8,7 @@ categories: ["MySQL"]
 keywords: ["MySQL"]
 description: "MySQL远程备份 还原"
 author: "北斗"
-toc: false
+toc: true
 autoCollapseToc: false
 contentCopyright: true
 reward: false

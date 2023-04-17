@@ -128,7 +128,7 @@ author: "xianmin"
 # You can close(false) or open(true) something for this content.
 # P.S. comment can only be closed
 comment: false
-toc: false
+toc: true
 # You can also define another contentCopyright
 contentCopyright: '<a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a>'
 reward: false

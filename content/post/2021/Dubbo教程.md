@@ -9,7 +9,7 @@ keywords: ["Dubbo教程 ZooKeeper"]
 description: "Dubbo 教程 配置"
 author: "北斗"
 comment: false
-toc: false
+toc: true
 autoCollapseToc: false
 contentCopyright: false
 reward: false

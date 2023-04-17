@@ -136,7 +136,7 @@ author: "xianmin"                  # 作者
 # 用户自定义
 # 你可以选择 关闭(false) 或者 打开(true) 以下选项
 comment: false   # 关闭评论
-toc: false       # 关闭文章目录
+toc: true       # 关闭文章目录
 # 你同样可以自定义文章的版权规则
 contentCopyright: '<a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a>'
 reward: false	 # 关闭打赏
@@ -192,6 +192,6 @@ Hugo-theme-jane is licensed under the MIT license. Check the [LICENSE](LICENSE.m
 
 # Stackbit
 
-This theme is ready to import into Stackbit. This theme can be deployed to Netlify and you can connect any headless CMS including Forestry, NetlifyCMS, DatoCMS or Contentful. 
+This theme is ready to import into Stackbit. This theme can be deployed to Netlify and you can connect any headless CMS including Forestry, NetlifyCMS, DatoCMS or Contentful.
 
 [![Create with Stackbit](https://assets.stackbit.com/badge/create-with-stackbit.svg)](https://app.stackbit.com/create?theme=https://github.com/xianmin/hugo-theme-jane)
