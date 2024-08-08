@@ -27,7 +27,9 @@ mathjax: false
 #     parent: "docs"
 #     weight: 1
 ---
-# Protobuf 安装
+
+### Protobuf 安装
+
 1. 安装 protobuf
 ```shell
 brew install protobuf
@@ -69,7 +71,9 @@ service HelloService {
 protoc --go_out=. hello.proto
 protoc --go-grpc_out=. hello.proto
 ```
-# 服务端
+
+### 服务端
+
 1. 实现服务端
 ```go
 package main
@@ -118,7 +122,9 @@ func main() {
 ```shell
 go run main.go
 ```
-# 客户端
+
+### 客户端
+
 1. 实现客户端
 ```go
 package main
